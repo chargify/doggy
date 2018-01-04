@@ -6,6 +6,8 @@ Doggy manages your DataDog dashboards, alerts, monitors, and screenboards.
 
 ## Installation
 
+Create a new git repo with an empty `objects` folder.
+
 Add this line to your Gemfile:
 
 ```ruby
@@ -43,10 +45,35 @@ If you're feeling adventurous, just put plaintext `secrets.json` in your root ob
 }
 ```
 
+## Configuration
+
+#### Environment variables
+
+Export the `ENABLE_DEPLOY_EVENT` environment variable and `doggy` will pick it up automatically.
+
+#### json
+
+You can also define your config in `config.json` in your root object store like this:
+
+```json
+{
+  "enable_deploy_event": true
+}
+```
+
 ## Usage
 
 ```bash
+# Generates a deploy event with the current SHA of your git repo.
+# This may be required before your first `doggy sync` if you get an error like:
+# NoMethodError: undefined method `[]' for nil:NilClass
+#   doggy/lib/doggy/model.rb:137:in `current_sha'
+# Doing this implies that your current
+$ doggy generate_deploy_event
+
 # Syncs local changes to Datadog since last deploy.
+# ONLY pushes any changed objects/deletes any deleted objects.
+# Does NOT pull down any changes from Datadog.
 $ doggy sync
 
 # Download items. If no ID is given it will download all the items managed by dog.

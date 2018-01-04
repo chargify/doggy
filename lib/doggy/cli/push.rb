@@ -20,7 +20,11 @@ module Doggy
           resource.save
         end
       end
-      Doggy::Model.emit_shipit_deployment
+      generate_deploy_event
+    end
+
+    def generate_deploy_event
+      Doggy::Model.emit_deployment_event
     end
 
     def push_all(ids)

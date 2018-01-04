@@ -35,6 +35,17 @@ module Doggy
       CLI::Push.new.sync_changes
     end
 
+    desc "generate_deploy_event", "Manually generate a deploy event with the current SHA"
+    long_desc <<-D
+      Creates a deploy event in Datadog with the current SHA.
+      This may be required if you're trying to run 'sync' for the first time,
+      and therefore have no last deployed SHA to compare to.
+    D
+
+    def generate_deploy_event
+      CLI::Push.new.generate_deploy_event
+    end
+
     desc "push [IDs]", "Hard pushes objects to Datadog"
     long_desc <<-D
       Pushes objects to Datadog. You can provide list of IDs to scope it to certain objects,
@@ -79,4 +90,3 @@ module Doggy
     end
   end
 end
-

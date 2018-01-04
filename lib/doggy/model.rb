@@ -131,20 +131,26 @@ module Doggy
       def current_sha
         now = Time.now.to_i
         month_ago = now - 3600 * 24 * 30
-        result = request(:get, "https://app.datadoghq.com/api/v1/events?start=#{ month_ago }&end=#{ now }&tags=audit,shipit")
+        result = request(:get, "https://app.datadoghq.com/api/v1/events?start=#{ month_ago }&end=#{ now }&tags=audit,doggy_deploy")
         result['events'][0]['text'] # most recetly deployed SHA
       end
 
-      def emit_shipit_deployment
-        return unless ENV['SHIPIT']
+      def emit_deployment_event
+        return unless Doggy.enable_deploy_event
+
+        repo = Rugged::Repository.new(Doggy.object_root.parent.to_s)
+        ref = repo.head
+        revision = ref.target.oid
+        author = ref.target.author[:email] || ref.target.author[:name]
+        Doggy.ui.say "Creating Doggy Deploy Event by #{author}, with sha = #{revision}"
 
         request(:post, 'https://app.datadoghq.com/api/v1/events', {
-          title: "ShipIt Deployment by #{ENV['USER']}",
-          text: ENV['REVISION'],
-          tags: %w(audit shipit),
+          title: "Doggy Deployment by #{author}",
+          text: revision,
+          tags: %w(audit doggy_deploy),
           date_happened: Time.now.to_i,
           priority: 'normal',
-          source_type_name: 'shipit'
+          source_type_name: 'doggy'
         }.to_json)
       end
 
@@ -230,4 +236,3 @@ module Doggy
     end
   end # Model
 end # Doggy
-
