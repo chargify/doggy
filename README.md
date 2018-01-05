@@ -48,14 +48,16 @@ If you're feeling adventurous, just put plaintext `secrets.json` in your root ob
 ## Usage
 
 ```bash
-# Generates a deploy event with the current SHA of your git repo.
+# Manually generates a deploy event with the current SHA of your git repo.
 # This may be required before your first `doggy sync` if you get an error like:
 # NoMethodError: undefined method `[]' for nil:NilClass
 #   doggy/lib/doggy/model.rb:137:in `current_sha'
-# Doing this implies that your current
+# Doing this implies that any objects currently defined locally are already defined on Datadog
 $ doggy generate_deploy_event
 
-# Syncs local changes to Datadog since last deploy.
+# Syncs local changes to Datadog since last deploy and creates deploy event.
+# Will look at the SHA of the latest deploy event and push any changes
+# commited since that SHA.
 # ONLY pushes any changed objects/deletes any deleted objects.
 # Does NOT pull down any changes from Datadog.
 $ doggy sync
@@ -66,16 +68,25 @@ $ doggy pull [IDs]
 # Upload items to Datadog. If no ID is given it will push all items.
 $ doggy push [IDs]
 
-# Edit an item in WYSIWYG
+# Edit an item in WYSIWYG, will create a copy of the item on Datadog
+# and open it your browser to edit. Once done, come back and enter `Y`.
+# The copy will be deleted from Datadog.
+# Any changes made will be updated in your local object file.
+# It will NOT change the original item on Datadog. You will either need to:
+# `doggy push ID` OR commit the changes and then do `doggy sync`.
 $ doggy edit ID
 
 # Delete selected items from both Datadog and local storage
 $ doggy delete IDs
 
-# Mute monitor(s) forever
+# Mute monitor(s) forever or with optional `--duration DURATION` (`1h`,`1d`, etc.)
+# Also accepts optional `--scope` (this is Datadog scopes, such as `--scope 'role:mysql'`)
+# to mute all monitors for a given scope.
 $ doggy mute IDs
 
-# Unmute monitor(s)
+# Unmute monitor(s).
+# Also accepts optional `--scope` (this is Datadog scopes, such as `--scope 'role:mysql'`)
+# Or `--all-scopes` to unmute accross all scopes
 $ doggy unmute IDs
 ```
 Multiple IDs should be separated by space.
