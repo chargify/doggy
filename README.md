@@ -45,22 +45,6 @@ If you're feeling adventurous, just put plaintext `secrets.json` in your root ob
 }
 ```
 
-## Configuration
-
-#### Environment variables
-
-Export the `ENABLE_DEPLOY_EVENT` environment variable and `doggy` will pick it up automatically.
-
-#### json
-
-You can also define your config in `config.json` in your root object store like this:
-
-```json
-{
-  "enable_deploy_event": true
-}
-```
-
 ## Usage
 
 ```bash

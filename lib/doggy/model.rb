@@ -136,8 +136,6 @@ module Doggy
       end
 
       def emit_deployment_event
-        return unless Doggy.enable_deploy_event
-
         repo = Rugged::Repository.new(Doggy.object_root.parent.to_s)
         ref = repo.head
         revision = ref.target.oid

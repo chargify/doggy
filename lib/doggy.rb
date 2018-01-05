@@ -61,11 +61,7 @@ module Doggy
   def application_key
     ENV['DATADOG_APP_KEY'] || secrets['datadog_app_key']
   end
-
-  def enable_deploy_event
-    ENV['ENABLE_DEPLOY_EVENT'] || config['enable_deploy_event']
-  end
-
+  
   def resolve_path(path)
     path     = Pathname.new(path)
     curr_dir = Pathname.new(Dir.pwd)
@@ -79,13 +75,6 @@ module Doggy
   def secrets
     @secrets ||= begin
                    raw = File.read(repo_root.join('secrets.json'))
-                   JSON.parse(raw)
-                 end
-  end
-
-  def config
-    @config ||= begin
-                   raw = File.read(repo_root.join('config.json'))
                    JSON.parse(raw)
                  end
   end
